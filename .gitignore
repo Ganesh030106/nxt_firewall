@@ -61,18 +61,6 @@ Pipfile.lock
 # VS Code
 .vscode/
 
-# Logs
-logs/
-*.log
-
-# Models and datasets
-models/
-*.h5
-*.csv
-*.arff
-*.yml
-*.yaml
-*.json
 
 # Quarantine and temp
 Quarantine_Vault/
@@ -85,9 +73,6 @@ Thumbs.db
 # Git
 .git/
 
-# Static and build artifacts
-static/
-style/
 
 # Ignore virtual environments
 venv/
