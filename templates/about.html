@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Sentinel-X Chat</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .chat-box { height: 400px; overflow-y: scroll; border: 1px solid #45a29e; background: #0b0c10; padding: 20px; }
+        .user-msg { text-align: right; color: #66fcf1; margin-bottom: 10px; }
+        .bot-msg { text-align: left; color: #fff; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark mb-4">
+        <div class="container-fluid">
+            <span class="navbar-brand">🤖 Sentinel-X AI Assistant</span>
+            <a href="/" class="btn btn-outline-light btn-sm">← Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card p-3">
+            <div class="chat-box" id="chatBox">
+                <div class="bot-msg"><strong>AI:</strong> Hello, Administrator. I am monitoring your Network, Files, and Web Traffic. How can I assist?</div>
+            </div>
+            <div class="input-group mt-3">
+                <input type="text" id="userMsg" class="form-control" placeholder="Ask about system status...">
+                <button class="btn btn-success" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function sendMessage() {
+            let input = document.getElementById('userMsg');
+            let chatBox = document.getElementById('chatBox');
+            let msg = input.value;
+            if(!msg) return;
+
+            // User Message
+            chatBox.innerHTML += `<div class="user-msg">${msg}</div>`;
+            input.value = "";
+
+            // Simulated AI Response (Simple Logic)
+            setTimeout(() => {
+                let response = "I am running diagnostics...";
+                if(msg.toLowerCase().includes("status")) response = "System is ONLINE. Ransomware Monitor is Active.";
+                else if(msg.toLowerCase().includes("threat")) response = "No active critical threats detected at this moment.";
+                else if(msg.toLowerCase().includes("help")) response = "I can track DDoS, Port Scans, and File Encryption attempts.";
+                
+                chatBox.innerHTML += `<div class="bot-msg"><strong>AI:</strong> ${response}</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

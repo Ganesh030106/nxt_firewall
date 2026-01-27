@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - Sentinel-X</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #1f1f1f; color: #fff; }
+        .card { background-color: #2b2b2b; }
+        .log-CRITICAL { color: #ff4d4d; font-weight: bold; }
+        .chat-box { height: 250px; overflow-y: scroll; background: #1a1a1a; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">👑 Admin Dashboard</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Agents -->
+        <div class="card mb-4 p-3">
+            <h4>🖥️ Registered Agents</h4>
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th>IP Address</th>
+                        <th>Status</th>
+                        <th>Last Seen</th>
+                    </tr>
+                </thead>
+                <tbody id="agentsTable"></tbody>
+            </table>
+        </div>
+
+        <!-- Alerts -->
+        <div class="card mb-4 p-3">
+            <h4>🚨 Alerts</h4>
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Source</th>
+                        <th>Message</th>
+                        <th>Type</th>
+                    </tr>
+                </thead>
+                <tbody id="alertsTable"></tbody>
+            </table>
+        </div>
+
+        <!-- Chat -->
+        <div class="card mb-4 p-3">
+            <h4>💬 Admin Chat</h4>
+            <div class="chat-box mb-2" id="chatBox"></div>
+            <div class="input-group">
+                <input type="text" id="chatInput" class="form-control" placeholder="Type message...">
+                <button class="btn btn-primary" onclick="sendChat()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadAgents() {
+            const response = await fetch('/api/agents'); // We'll create this API route
+            const data = await response.json();
+            const tbody = document.getElementById('agentsTable');
+            tbody.innerHTML = '';
+            for (const ip in data) {
+                const agent = data[ip];
+                tbody.innerHTML += `<tr>
+                    <td>${ip}</td>
+                    <td>${agent.status}</td>
+                    <td>${agent.last_seen}</td>
+                </tr>`;
+            }
+        }
+
+        async function loadAlerts() {
+            const response = await fetch('/api/alerts'); // We'll create this API route
+            const data = await response.json();
+            const tbody = document.getElementById('alertsTable');
+            tbody.innerHTML = '';
+            data.forEach(alert => {
+                tbody.innerHTML += `<tr>
+                    <td>${alert.time}</td>
+                    <td>${alert.source}</td>
+                    <td>${alert.message}</td>
+                    <td class="log-CRITICAL">${alert.type}</td>
+                </tr>`;
+            });
+        }
+
+        async function loadChat() {
+            const response = await fetch('/api/chat');
+            const data = await response.json();
+            const chatBox = document.getElementById('chatBox');
+            chatBox.innerHTML = '';
+            data.forEach(msg => {
+                chatBox.innerHTML += `<div><strong>${msg.sender}</strong> [${msg.time}]: ${msg.text}</div>`;
+            });
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function sendChat() {
+            const input = document.getElementById('chatInput');
+            if (!input.value) return;
+            await fetch('/api/chat', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({text: input.value})
+            });
+            input.value = '';
+            loadChat();
+        }
+
+        // Auto refresh
+        setInterval(() => {
+            loadAgents();
+            loadAlerts();
+            loadChat();
+        }, 3000);
+
+        // Initial load
+        loadAgents();
+        loadAlerts();
+        loadChat();
+    </script>
+</body>
+</html>

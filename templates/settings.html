@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Sentinel-X Configuration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-dark mb-4">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">⚙️ System Configuration</span>
+            <a href="/" class="btn btn-outline-light btn-sm">← Back to Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card p-4">
+
+            <hr class="border-secondary my-4">
+
+            <h4 class="mb-3">⛔ Custom Blocking Rules</h4>
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <select id="ruleType" class="form-select bg-dark text-white border-secondary">
+                        <option value="IP">Block IP Address</option>
+                        <option value="PORT">Block Port</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <input type="text" id="ruleValue" class="form-control bg-dark text-white border-secondary" placeholder="e.g. 192.168.1.50 or 8080">
+                </div>
+                <div class="col-md-3">
+                    <button onclick="addRule()" class="btn btn-danger w-100">Add Block Rule</button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-dark table-sm">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Value</th>
+                            <th>Date Added</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rulesTable">
+                        </tbody>
+                </table>
+            </div>
+            
+            <h4 class="mb-4">🔥 Firewall Engine Parameters</h4>
+            
+            <div class="mb-4 p-3 border border-secondary rounded">
+                <label class="form-label d-block text-white">Active Defense Mode</label>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="modeSwitch" style="transform: scale(1.5); margin-right: 15px;">
+                    <span id="modeLabel" class="text-muted">Loading...</span>
+                </div>
+                <small class="text-muted">If OFF, threats will be logged but NOT blocked (Monitor Mode).</small>
+            </div>
+
+            <div class="mb-4 p-3 border border-secondary rounded">
+                <label class="form-label text-white">AI Sensitivity Threshold: <span id="sensValue" class="text-info font-weight-bold">...</span></label>
+                <input type="range" class="form-range" id="sensRange" min="0.5" max="0.99" step="0.01">
+                <div class="d-flex justify-content-between text-muted small">
+                    <span>Low (More False Negatives)</span>
+                    <span>High (Paranoid)</span>
+                </div>
+            </div>
+
+            <button onclick="saveSettings()" class="btn btn-primary w-100">💾 Save Configuration</button>
+        </div>
+    </div>
+
+    <script>
+        // Load Rules on Page Load
+        function loadRules() {
+            fetch('/api/rules')
+                .then(r => r.json())
+                .then(data => {
+                    const tbody = document.getElementById('rulesTable');
+                    tbody.innerHTML = "";
+                    data.forEach(rule => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td><span class="badge bg-secondary">${rule.type}</span></td>
+                                <td>${rule.value}</td>
+                                <td class="small text-muted">${rule.time}</td>
+                                <td>
+                                    <button onclick="deleteRule(${rule.id})" class="btn btn-sm btn-outline-danger">Remove</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                });
+        }
+
+        function addRule() {
+            const type = document.getElementById('ruleType').value;
+            const value = document.getElementById('ruleValue').value;
+            if(!value) return alert("Please enter a value!");
+
+            fetch('/api/rules', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({type: type, value: value})
+            }).then(() => {
+                document.getElementById('ruleValue').value = "";
+                loadRules(); // Refresh list
+            });
+        }
+
+        function deleteRule(id) {
+            if(!confirm("Remove this rule?")) return;
+            fetch('/api/rules', {
+                method: 'DELETE',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id: id})
+            }).then(() => loadRules());
+        }
+
+        // Initialize
+        loadRules();
+        // Load Settings
+        fetch('/api/settings').then(r => r.json()).then(data => {
+            // Mode Switch
+            const isBlocked = data.blocking_mode === "ON";
+            document.getElementById('modeSwitch').checked = isBlocked;
+            updateModeLabel(isBlocked);
+
+            // Slider
+            document.getElementById('sensRange').value = data.sensitivity;
+            document.getElementById('sensValue').innerText = (data.sensitivity * 100).toFixed(0) + "%";
+        });
+
+        // UI Helpers
+        document.getElementById('modeSwitch').addEventListener('change', (e) => updateModeLabel(e.target.checked));
+        document.getElementById('sensRange').addEventListener('input', (e) => {
+            document.getElementById('sensValue').innerText = (e.target.value * 100).toFixed(0) + "%";
+        });
+
+        function updateModeLabel(isOn) {
+            const lbl = document.getElementById('modeLabel');
+            if(isOn) {
+                lbl.innerText = "ACTIVE BLOCKING ENABLED";
+                lbl.className = "fw-bold text-danger";
+            } else {
+                lbl.innerText = "MONITOR ONLY (PASSIVE)";
+                lbl.className = "fw-bold text-success";
+            }
+        }
+
+        // Save
+        function saveSettings() {
+            const payload = {
+                blocking_mode: document.getElementById('modeSwitch').checked ? "ON" : "OFF",
+                sensitivity: document.getElementById('sensRange').value
+            };
+            
+            fetch('/api/settings', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            }).then(() => alert("Configuration Updated! The Firewall Engine will apply changes immediately."));
+        }
+    </script>
+</body>
+</html>
