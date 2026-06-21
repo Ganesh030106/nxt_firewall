@@ -397,7 +397,7 @@ def update_setting(key, value):
 
 # --- LOG ROTATION & ARCHIVING ---
 # Archive Old Logs
-def archive_old_logs(retention_days=30):
+def archive_old_logs(retention_days=5):
     """
     Moves logs older than 'retention_days' to a CSV file and deletes them from DB.
     """
