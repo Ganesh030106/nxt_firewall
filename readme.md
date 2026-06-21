@@ -1,194 +1,118 @@
-# 🛡️ Sentinel-X: AI-Powered Next-Gen Hybrid Firewall & EDR System
+# 🛡️ Sentinel-X: AI Hybrid Firewall & EDR Command Center
 
-![Project Status](https://img.shields.io/badge/Status-Active-success)
-![Python Version](https://img.shields.io/badge/Python-3.9%2B-blue)
-![License](https://img.shields.io/badge/License-MIT-green)
+**Sentinel-X** is an intelligent, autonomous Endpoint Detection and Response (EDR) suite and packet-filtering firewall designed to defend enterprise networks. By combining a **Triple-Layer AI Engine**, deep packet payloads scans, zero-trust contextual filters, hardware port surveillance, and automatic directory guardians, it seals vulnerabilities before exploits can start.
 
-## 📖 Project Overview
-
-**Sentinel-X** is an intelligent, autonomous network security system designed to bridge the gap between traditional rule-based firewalls and modern AI-driven threat detection.
-
-Traditional firewalls often fail to detect sophisticated threats like "Low-and-Slow" DDoS attacks, zero-day exploits, or physical breaches. Sentinel-X solves this by combining **Deep Learning (LSTM)**, **Machine Learning (Random Forest)**, and **Behavioral Heuristics** to detect, block, and report threats in real-time without human intervention.
-
-It transforms a standard defensive setup into a proactive **Endpoint Detection & Response (EDR)** suite, featuring self-healing vulnerability scans, physical port security, and zero-trust architecture.
+The system is designed with a **decoupled full-stack architecture**, featuring a fast C-based packet sniffer backend (Flask API + Scapy) and a high-end, responsive Next.js dashboard UI.
 
 ---
 
-## 🚀 Key Features
+## 🚀 Key Feature Categories
 
-### 🧠 **1. Triple-Layer AI Engine**
-* **Deep Learning (LSTM):** Analyzes time-series traffic data to detect complex, low-volume anomalies.
-* **Machine Learning (Random Forest):** Classifies individual packets based on header features (Size, Flags, Protocol).
-* **Phishing Detection:** Real-time URL analysis to block credential harvesting sites.
+### 🧠 1. Triple-Layer AI Analysis
+*   **Machine Learning Classifiers:** Evaluates raw TCP/UDP packet headers (flags, ports, bytes) in microseconds using a highly trained Random Forest model.
+*   **Deep Learning Volume Forecaster:** Sequential time-series forecasting utilizing a **Keras LSTM** model to predict expected traffic levels, flagging zero-day network abnormalities.
+*   **Explainable URL Phishing Scan:** Parses Unicode patterns, homograph brand mimicking, domain age, WHOIS logs, and SSL attributes through a Random Forest pipeline.
 
-### 🛡️ **2. Advanced Network Defense**
-* **DDoS Protection:** Rate-limiting engine blocks IPs exceeding packet thresholds (e.g., >50 pkts/sec).
-* **Deep Packet Inspection (DPI):** Scans payload content for SQL Injection (`' OR 1=1`) and XSS attacks.
-* **Zero Trust Architecture:** Scores every connection based on Context (Time, Geo-location, Protocol).
-* **DNS Security:** Detects DNS Tunneling (Data Exfiltration) and Sinkholes malicious domains.
+### 🛡️ 2. Advanced Active Defenses
+*   **DDoS Flow Limiter:** Automatic, high-performance packet velocity filter that locks out flooding IPs (exceeding >50 pkts/sec) instantly.
+*   **Deep Packet Inspection (DPI):** Scans raw packet payloads for SQL Injection signatures and Cross-Site Scripting (XSS) payloads.
+*   **Zero-Trust Context Scoring:** Evaluates a trust score (0–100) dynamically based on geographic country codes, protocol suitability, and access hours.
+*   **DNS Tunneling & Sinkhole:** Detects Shannon Entropy leaks inside subdomains and sinkholes malicious requests using fake resolver packets.
+*   **Global Threat Feeds:** Dynamic, hourly atomic updates syncing with Emerging Threats and Feodo Tracker C2 blocklists.
 
-### 🔒 **3. Endpoint & Physical Security**
-* **Malware Scanner (YARA):** Automatically scans downloaded files against a signature database (e.g., Ransomware, Trojans).
-* **USB Sentinel:** Monitors keystroke velocity to detect and lock "Rubber Ducky" attacks.
-* **Ransomware Monitor:** Watchdog service that locks the system if rapid file encryption is detected.
+### 🔒 3. Host & Physical EDR Protections
+*   **YARA Malware Scanner:** Watchdog system that matches newly downloaded files against compiled malware signature rule blocks.
+*   **Ransomware Directory Guardian:** Monitors modification thresholds inside protected vaults, locking the workstation if rapid encryption is detected.
+*   **Keystroke USB Sentinel:** Hooks global keyboards to detect superhuman typing velocity (delays <50ms) to quarantine Rubber Ducky USB injections.
+*   **Self-Defense Integrity Watchdog:** Hashes and monitors all core codebase source files via SHA-256 on startup to protect the firewall software itself against tampering or unauthorized modifications.
 
-### 🏥 **4. Proactive Health (Self-Healing)**
-* **Vulnerability Scanner:** Runs daily Nmap scans on the localhost/router to identify open risky ports (e.g., SMB, Telnet) before attackers exploit them.
+### 🏥 4. Proactive Diagnostics & Decoys
+*   **Self-Healing Vulnerability Scanner:** Initiates daily automated Nmap sweeps on local routes to audit exposed protocols (SMB, Telnet, MySQL) and reports them on the command panel.
+*   **Interactive Decoy Honeypot:** Spawns mock target listeners (SSH, HTTP, Telnet) on inactive ports to attract, detect, and analyze scanner sweeps and brute-force sweeps.
 
-### 📊 **5. Enterprise Visualization**
-* **Real-Time Dashboard:** WebSockets-based UI updating in milliseconds.
-* **Voice Alerts:** Text-to-Speech engine announces critical threats audibly (Jarvis-style).
-* **PDF Reports:** One-click generation of professional security audit reports.
+### 🕵️‍♂️ 5. Forensics & Automated Reporting
+*   **Real-time PCAP Forensic Captures:** Automatically captures and exports raw packet sequences in PCAP format when high-severity DPI signatures are triggered.
+*   **PDF Forensic Reports:** Generates professional, styled PDF logs summarizing firewall blocks, system resource metrics, and threat profiles for network audits.
+*   **Audible Voice Warning System:** Integrates dynamic Text-to-Speech (TTS) vocal warnings to instantly alert system administrators audibly to critical breaches.
 
----
-
-## 🛠️ Technologies Used
-
-* **Language:** Python 3.9+
-* **Core Libraries:**
-    * `Scapy`: Packet sniffing and manipulation.
-    * `TensorFlow/Keras`: Deep Learning (LSTM) models.
-    * `Scikit-learn`: Random Forest ML models.
-    * `Flask` & `SocketIO`: Web Dashboard and Real-time events.
-    * `Pandas` & `NumPy`: Data processing.
-    * `YARA-Python`: Malware signature matching.
-    * `Python-Nmap`: Network vulnerability scanning.
-    * `Watchdog`: File system monitoring.
+### 🕸️ 6. Interactive Network Visualization & Feedback
+*   **Live Threat Topology Map:** Uses a client-side canvas-based graph rendering interface (powered by `vis-network`) to map out IP addresses forwarding traffic to your computer. Threatening IPs are dynamically updated and visually isolated/color-coded based on block or alert status.
+*   **User Feedback Learning Overrides:** Enables administrator overriding of false positives directly from the log console. It trains a secondary machine learning model that dynamically permits legitimate overridden traffic streams.
 
 ---
 
-## 🏗️ System Architecture
+## 🏗️ Decoupled Full-Stack Architecture
 
-**Workflow:**
-1.  **Ingestion:** Scapy sniffs packets from the network interface.
-2.  **Preprocessing:** Features (Size, Protocol, Flags) are extracted and encoded.
-3.  **Analysis (Parallel Engines):**
-    * *Engine A (Rules):* Checks Blacklists, Geo-IP, and Threat Intel feeds.
-    * *Engine B (AI):* Random Forest classifies the packet as Malicious/Benign.
-    * *Engine C (Deep Learning):* LSTM checks traffic volume trends.
-4.  **Decision:** If any engine flags the packet -> **BLOCK**.
-5.  **Response:** Log to DB, Speak Alert, Update Dashboard, Ban IP.
+Sentinel-X operates as a decoupled system:
+1.  **Backend C2 Sniffer (`app.py` - Port 5000):** Consists of a multi-processed architecture. A dedicated sniffer process intercepts packets bypassing the Python GIL, pushing raw logs to a main analyzer consumer thread. Exposes REST APIs and emits websocket alerts.
+2.  **Next.js Dashboard (`/frontend` - Port 3000):** Built on React, TypeScript, and Tailwind CSS. Connects to Flask using Socket.IO and maps telemetry charts cleanly.
 
 ---
 
-## ⚙️ Installation & Setup
+## 📂 Simplified Folder Structure
+```
+fullnxt/
+├── backend/                    # Backend C2 Sniffer (Flask API + Scapy)
+│   ├── app.py                  # Flask API & Sniffer Engine Entry (Port 5000)
+│   ├── admin.py                # Mock C2 Control Panel
+│   ├── requirements.txt        # Python Core Library Manifest
+│   ├── src/                    # Active Sniffers & Defensive Modules
+│   │   ├── firewall.py         # Packet Classifier & Core Analyzer Loops
+│   │   ├── database.py         # Fully Parameterized SQLite Logs Engine
+│   │   ├── dl_traffic.py       # Keras LSTM Anomaly Predictor
+│   │   ├── zero_trust.py       # Zero-Trust Context Scorer
+│   │   ├── cnn_gru_inference.py # Hybrid Sequence Classification
+│   │   └── ...                 # Helper utilities (DPI, DNS, Geo, Voice)
+│   ├── models/                 # Trained Machine Learning & YARA Signature Files
+│   ├── attacks/                # Simulation Attack Suite Scripts
+│   └── logs/                   # SQLite Database Logs & Forensic PCAP folder
+└── frontend/                   # Decoupled Next.js TypeScript Dashboard (Port 3000)
+```
+
+---
+
+## ⚙️ Installation & Bootstrapping
 
 ### Prerequisites
-* **Python 3.9+**
-* **Nmap:** Must be installed on the OS and added to system PATH. ([Download Nmap](https://nmap.org/download.html))
-* **Admin Privileges:** Required for packet sniffing (Scapy) and USB blocking.
+*   **Nmap:** Must be installed on your OS and added to system PATH variables.
+*   **Elevated Shell:** Packet sniffing interfaces (Scapy) and keyboard hooks require Administrator/Root permissions.
 
-### **1. Clone the Repository**
-
+### Step 1: Start the Backend Sniffer (Elevated Terminal)
 ```bash
-git clone [https://github.com/yourusername/sentinel-x.git](https://github.com/yourusername/sentinel-x.git)
-cd sentinel-x/nxt
-```
+# 1. Navigate to the backend directory
+cd backend
 
-### **2️.Create Virtual Environment**
-
-```bash
+# 2. Create and activate environment
 python -m venv venv
-
-# Windows:
 .\venv\Scripts\activate
 
-# Linux/Mac:
-source venv/bin/activate
-```
-
-### **3️.Install Dependencies**
-
-To install dependencies for the project
-
-```bash
+# 3. Install requirements
 pip install -r requirements.txt
-```
 
-### **4️.Train AI Models (First Run Only)**
-
-Initialize the brains of the operation:
-
-```bash
-python src/train_model.py       # Random Forest
-python src/train_lstm.py        # Deep Learning
-python src/train_real_model.py  # Main Anomaly Detector
-```
-
-### **🖥️ Usage & Execution**
-
-### Step 1: Start the Admin Server (Optional C2)
-
-```bash
-python admin.py
-```
-
-### **Step 2: Start Sentinel-X Engine**
-
-* ⚠️ Must run as Administrator/Root
-
-```bash
+# 4. Boot Flask C2 Engine
+$env:PYTHONIOENCODING="utf-8"
 python app.py
 ```
 
-### If the project works:
-
-* [INFO] ✅ Sentinel-X Packet AI Loaded Successfully.
-
-### **Step 3: Run Simulations (Test the System)**
-
-* Open a new terminal (Admin) and run the attack suite:
-
+### Step 2: Start the Next.js Dashboard
 ```bash
+# Open a new terminal
+cd frontend
+npm install
+npm run dev
+```
+Open **[http://127.0.0.1:3000](http://127.0.0.1:3000)** in your browser!
+
+---
+
+## 🧪 Diagnostic Stress-Testing Scenarios
+
+Run the attack diagnostic panel to verify active defense blocking:
+```bash
+cd backend
 python attacks/run_all.py
 ```
 
-* Select Option A to run a Full Stress Test.
-
-### **📂 Project Structure**
-nxt/
-├── app.py                  # Main Application Entry Point
-├── src/
-│   ├── firewall.py         # Core Logic (Sniffer + Decision Engine)
-│   ├── dl_traffic.py       # Deep Learning (LSTM) Module
-│   ├── malware_scanner.py  # YARA Malware Detection
-│   ├── usb_defense.py      # Physical USB Security
-│   ├── scanner.py          # Proactive Nmap Scanner
-│   ├── zero_trust.py       # Zero Trust Scoring
-│   └── ...                 # Helper modules (Geo, DNS, Voice, etc.)
-├── models/                 # Trained AI Models (.pkl, .h5, .yar)
-├── attacks/                # Attack Simulation Scripts (DDoS, SQLi, etc.)
-├── templates/              # HTML Dashboard
-├── static/                 # CSS/JS Assets
-└── logs/                   # Database & Forensic PCAPs
-
-### **🧪 Dataset & Evaluation**
-
-* **Training Data:** Hybrid dataset from NSL-KDD + synthetic traffic (Scapy)
-
-* **Evaluation Methods:** Real-time dashboard for FP/FN feedback loops
-
-* **Forensics:** Blocked packets saved as .pcap for Wireshark
-
-* **Self-Test:** attacks/run_all.py validates each security module
-
-### **⚠️ Limitations**
-
-* Platform: Optimized for Windows
-
-* uses windll + PowerShell context
-
-* Linux requires small locking-mechanism edits
-
-### **Encrypted Traffic:**
-
-* Payload of HTTPS (TLS 1.3) cannot be inspected
-* ✔️ Metadata such as SNI, certificates, flow features is analyzed
-
-### **🔮 Future Enhancements**
-
-* Blockchain Logging: Immutable audit trails
-
-* Cloud Integration: Centralized multi-node dashboard
-
-* Reinforcement Learning: Auto-tuning thresholds via feedback
+*   **Option A**: *Full Stress Test* - Sweeps across large buffer overflows, non-standard beaconing, and DDoS floods.
+*   **YARA Test**: Drop any signature rule file into `backend/Simulated_Downloads/` to verify quarantine movements.
+*   **Zero-Trust Test**: Connect to Port `8080` (Mock Corporate Gateway) to check dynamic trust scoring.
